@@ -6,11 +6,24 @@ const initialItems = [
 ];
 
 export default function App() {
+  const [items, setItems] = useState([]); //items is an array
+
+  //we need the items in packing list comp
+  //but cant pass it as props since form and packing list are siblings
+  //data can flow only down the tree
+  //so move the items state to app parent comp
+  function handleAddItems(item) {
+    //new state depends on the current state
+    //cant mutate state so add current item to existing items
+    setItems((items) => [...items, item]);
+  }
+
+  //send the items as prop to packing list and send function to form
   return (
     <div className="app">
       <Logo />
-      <Form />
-      <PackingList />
+      <Form onAddItems={handleAddItems} />
+      <PackingList items={items} />
       <Stats />
     </div>
   );
@@ -18,17 +31,20 @@ export default function App() {
 function Logo() {
   return <h1>📝Plan to Travel🧳🏖️🏔️</h1>;
 }
-function Form() {
+function Form({ onAddItems }) {
   //react should control the form elements state not the dom
   const [description, setDescription] = useState("");
   const [quantity, setQuantity] = useState(1);
+
+  //function to submit new item
   function handleSubmit(e) {
     //disable default html way of reloading the page when submitting
     e.preventDefault();
     if (!description) return;
     const newItem = { description, quantity, packed: false, id: Date.now() };
     console.log(newItem);
-
+    //reset the fields after adding new item
+    onAddItems(newItem);
     setDescription("");
     setQuantity("");
   }
@@ -53,11 +69,12 @@ function Form() {
     </form>
   );
 }
-function PackingList() {
+
+function PackingList({ items }) {
   return (
     <div className="list">
       <ul>
-        {initialItems.map((item) => (
+        {items.map((item) => (
           <Item item={item} key={item.id} />
         ))}
       </ul>
@@ -69,8 +86,8 @@ function Item({ item }) {
   return (
     <li>
       <span style={item.packed ? { textDecoration: "line-through" } : {}}>
-        {item.description}
         {item.quantity}
+        {item.description}
       </span>
       <button>❌</button>
     </li>
