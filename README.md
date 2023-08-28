@@ -1,6 +1,9 @@
 # Getting Started with Create React App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+https://react-travel-todo-list.vercel.app/
+
+<img src="recording.gif" width="900" height="500"/>
+
 
 ## Available Scripts
 
